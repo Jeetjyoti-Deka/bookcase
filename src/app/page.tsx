@@ -1,3 +1,5 @@
+import CustomersSection from "@/components/CustomersSection";
+import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import { Button } from "@/components/ui/button";
 import { Plus, Star, ThumbsUp } from "lucide-react";
 import Image from "next/image";
@@ -8,17 +10,17 @@ export default function Home() {
       <div className="absolute inset-0 w-full h-screen z-10 bg-black/10 backdrop-blur-sm md:hidden" />
       <div className="absolute inset-0 w-full h-screen z-0">
         <Image
-          src="/hero-2.png"
+          src="/hero.png"
           width={1440}
           height={1024}
           alt="hero"
           className="w-full h-screen object-cover"
         />
       </div>
-
-      <div className="relative z-50 flex flex-col h-screen justify-center items-center sm:items-start text-white px-4 sm:px-16">
+      {/* Hero Section */}
+      <div className="relative z-10 flex flex-col h-screen justify-center items-center sm:items-start text-white px-4 sm:px-16">
         <h1 className="text-2xl text-center mt-24 sm:mt-0 xs:text-4xl md:text-5xl lg:text-6xl font-bold">
-          Try Before Committing
+          Rent Before You Buy!
         </h1>
         <p className="sm:text-lg text-center sm:text-left md:text-2xl mt-10 sm:ml-1.5 max-w-prose">
           Out of hundreds of books, <br />
@@ -69,6 +71,34 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      {/* Customer Reviews Section */}
+      <MaxWidthWrapper>
+        <div className="py-20">
+          <div className="flex flex-col lg:flex-row items-center justify-center">
+            <h1 className="text-center text-5xl font-semibold tracking-normal order-2">
+              What our customers say
+            </h1>
+            <div
+              className="order-1 lg:order-3
+            w-28 sm:w-32 lg:w-40 "
+            >
+              <Image
+                aria-hidden
+                src="/books/book-1.svg"
+                alt="books"
+                width={166}
+                height={95}
+                className="object-contain w-full"
+              />
+            </div>
+          </div>
+
+          <div className="mt-20">
+            <CustomersSection />
+          </div>
+        </div>
+      </MaxWidthWrapper>
     </main>
   );
 }
