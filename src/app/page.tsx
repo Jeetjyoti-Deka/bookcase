@@ -1,5 +1,6 @@
 import CustomersSection from "@/components/CustomersSection";
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
+import ScrollTimeline from "@/components/ScrollTimeline";
 import { Button } from "@/components/ui/button";
 import { Plus, Star, ThumbsUp } from "lucide-react";
 import Image from "next/image";
@@ -74,7 +75,7 @@ export default function Home() {
 
       {/* Customer Reviews Section */}
       <MaxWidthWrapper>
-        <div className="py-20">
+        <div className="py-40">
           <div className="flex flex-col lg:flex-row items-center justify-center">
             <h1 className="text-center text-5xl font-semibold tracking-normal order-2">
               What our customers say
@@ -99,6 +100,12 @@ export default function Home() {
           </div>
         </div>
       </MaxWidthWrapper>
+      <div className="py-40">
+        <h3 className="text-center text-5xl font-semibold tracking-normal mb-20">
+          How it works
+        </h3>
+        <ScrollTimeline />
+      </div>
     </main>
   );
 }
