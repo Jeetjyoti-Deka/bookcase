@@ -1,9 +1,10 @@
 import CustomersSection from "@/components/CustomersSection";
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import ScrollTimeline from "@/components/ScrollTimeline";
-import { Button } from "@/components/ui/button";
-import { Plus, Star, ThumbsUp } from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { ArrowRight, Book, Check, Plus, Star, ThumbsUp } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -105,6 +106,58 @@ export default function Home() {
           How it works
         </h3>
         <ScrollTimeline />
+      </div>
+
+      <div className="pb-20 max-sm:px-2">
+        <h3 className="text-center text-5xl font-semibold tracking-normal mb-14">
+          What we offer
+        </h3>
+
+        <div className="flex flex-col sm:flex-row items-center lg:gap-x-20 justify-center sm:ml-10 lg:ml-20">
+          <div className="flex flex-col gap-y-2 tracking-wide">
+            <div className="flex items-center justify-start">
+              <Check className="w-5 h-5 text-primary mr-1.5" />
+              <p className="text-xl font-medium">Diverse Selection</p>
+            </div>
+            <div className="flex items-center justify-start">
+              <Check className="w-5 h-5 text-primary mr-1.5" />
+              <p className="text-xl font-medium">Flexible Rental Plans</p>
+            </div>
+            <div className="flex items-center justify-start">
+              <Check className="w-5 h-5 text-primary mr-1.5" />
+              <p className="text-xl font-medium">
+                Convenient Delivery and Returns
+              </p>
+            </div>
+            <div className="flex items-center justify-start">
+              <Check className="w-5 h-5 text-primary mr-1.5" />
+              <p className="text-xl ffont-medium">
+                Personalized Recommendations
+              </p>
+            </div>
+          </div>
+
+          <div className="w-80 sm:w-96 h-80 sm:h-96 relative">
+            <Image
+              src="/books/book-2.svg"
+              alt="book"
+              fill
+              className="object-contain"
+            />
+          </div>
+        </div>
+        <div className="flex items-center justify-center">
+          <Link
+            href=""
+            className={buttonVariants({
+              className: "mt-8 w-full max-w-xs mx-auto",
+              size: "lg",
+            })}
+          >
+            Get a book
+            <ArrowRight className="w-4 h-4 ml-1.5" />
+          </Link>
+        </div>
       </div>
     </main>
   );
