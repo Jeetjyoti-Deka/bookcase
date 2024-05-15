@@ -131,7 +131,7 @@ export default function Home() {
             </div>
             <div className="flex items-center justify-start">
               <Check className="w-5 h-5 text-primary mr-1.5" />
-              <p className="text-xl ffont-medium">
+              <p className="text-xl font-medium">
                 Personalized Recommendations
               </p>
             </div>

@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
-import { Inter, Lato } from "next/font/google";
-import "./globals.css";
+import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import type { Metadata } from "next";
+import { Lato } from "next/font/google";
+import "./globals.css";
 
 const lato = Lato({
   subsets: ["latin"],
@@ -19,10 +20,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="hide-scrollbar">
       <body className={lato.className}>
         <Navbar />
         {children}
+        <Footer />
       </body>
     </html>
   );
