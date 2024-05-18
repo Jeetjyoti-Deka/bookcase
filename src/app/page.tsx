@@ -148,7 +148,7 @@ export default function Home() {
         </div>
         <div className="flex items-center justify-center">
           <Link
-            href=""
+            href="/books"
             className={buttonVariants({
               className: "mt-8 w-full max-w-xs mx-auto",
               size: "lg",

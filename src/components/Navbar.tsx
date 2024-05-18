@@ -8,10 +8,13 @@ const Navbar = () => {
       <Link href="/" className="font-semibold text-lg cursor-pointer">
         Book<span className="text-primary">Case</span>
       </Link>
-      <Link href="" className={buttonVariants({})}>
-        Rent Now
-        <ArrowRight className="h-5 w-5 ml-1.5" />
-      </Link>
+      <div className="flex items-center gap-x-10">
+        <Link href="/api/auth/login">Sign In</Link>
+        <Link href="/books" className={buttonVariants({})}>
+          Rent Now
+          <ArrowRight className="h-5 w-5 ml-1.5" />
+        </Link>
+      </div>
     </nav>
   );
 };
