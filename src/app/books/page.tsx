@@ -2,51 +2,54 @@
 
 import BookCard from "@/components/BookCard";
 import { getBooks } from "@/lib/queryFunctions";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { TBook } from "@/lib/validators";
-import { z } from "zod";
+import { useMutation } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { z } from "zod";
 
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Button } from "@/components/ui/button";
 import { GENRES } from "@/lib/constants";
-import { Badge } from "@/components/ui/badge";
-import { getPaginatedBooks } from "@/lib/utils";
+import { cn, processApiResult } from "@/lib/utils";
 
 const Page = () => {
-  const [pageNumber, setPageNumber] = useState(1);
+  const [pageNumber, setPageNumber] = useState(0);
   const [books, setBooks] = useState<z.infer<typeof TBook>[] | null>(null);
   const [totalPages, setTotalPages] = useState(0);
+  const [genre, setGenre] = useState<(typeof GENRES)[number]>(GENRES[0]);
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["get-books"],
-    queryFn: getBooks,
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["get-books"],
+    mutationFn: getBooks,
+    onSuccess: (data) => {
+      const curBooks = processApiResult(data);
+      setBooks(curBooks);
+      setTotalPages(data.data.totalItems);
+    },
+    onMutate: () => {
+      setBooks([]);
+    },
   });
 
   useEffect(() => {
-    const curBooks = getPaginatedBooks(data?.data, pageNumber);
-    setBooks(curBooks.books);
-    setTotalPages(curBooks.totalPages);
-  }, [pageNumber, data?.data]);
+    mutate({ genre, page: pageNumber, limit: 8 });
+  }, [genre, mutate, pageNumber]);
 
   return (
     <div className="mt-[56px] min-h-[calc(100vh-56px)] px-2">
       <div className="grid grid-cols-12 gap-x-2 pt-2 pb-6">
         <div className="border-2 border-zinc-300 rounded-lg p-3 col-span-2 min-h-[calc(100vh-56px)]">
-          <GenreSection />
+          <GenreSection curGenre={genre} setGenre={setGenre} />
         </div>
         <div className="col-span-10 ">
           <div className="flex items-center justify-center flex-wrap gap-x-9 gap-y-4 min-h-[611.2px]">
-            {isLoading && <Loader2 className="h-6 w-6 animate-spin" />}
+            {isPending && <Loader2 className="h-6 w-6 animate-spin" />}
 
             {books?.map((book: z.infer<typeof TBook>, index: number) => (
               <BookCard key={index} book={book} />
@@ -58,8 +61,8 @@ const Page = () => {
                 <PaginationItem className="cursor-pointer select-none">
                   <Button
                     variant="ghost"
-                    disabled={pageNumber === 1}
-                    onClick={() => setPageNumber((prev) => prev - 1)}
+                    disabled={pageNumber === 0}
+                    onClick={() => setPageNumber((prev) => prev - 8)}
                   >
                     <ChevronLeft className="w-4 h-4 mr-1.5" /> Previous
                   </Button>
@@ -68,7 +71,7 @@ const Page = () => {
                   <Button
                     variant="ghost"
                     disabled={pageNumber === totalPages}
-                    onClick={() => setPageNumber((prev) => prev + 1)}
+                    onClick={() => setPageNumber((prev) => prev + 8)}
                   >
                     Next <ChevronRight className="w-4 h-4 mr-1.5" />
                   </Button>
@@ -82,7 +85,13 @@ const Page = () => {
   );
 };
 
-const GenreSection = () => {
+const GenreSection = ({
+  setGenre,
+  curGenre,
+}: {
+  curGenre: string;
+  setGenre: Dispatch<SetStateAction<string>>;
+}) => {
   return (
     <>
       <h3 className="font-semibold text-lg text-zinc-800 ml-2">Genre</h3>
@@ -91,7 +100,10 @@ const GenreSection = () => {
           <Badge
             key={index}
             variant="outline"
-            className="cursor-pointer hover:bg-gray-200 transition-all"
+            className={cn("cursor-pointer hover:bg-gray-200 transition-all", {
+              "bg-gray-300": genre === curGenre,
+            })}
+            onClick={() => setGenre(genre)}
           >
             {genre}
           </Badge>
