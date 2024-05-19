@@ -101,7 +101,8 @@ const GenreSection = ({
             key={index}
             variant="outline"
             className={cn("cursor-pointer hover:bg-gray-200 transition-all", {
-              "bg-gray-300": genre === curGenre,
+              "bg-orange-200 text-zinc-800 border border-orange-500 hover:bg-orange-200":
+                genre === curGenre,
             })}
             onClick={() => setGenre(genre)}
           >
