@@ -1,7 +1,7 @@
 "use client";
 
 import BookCard from "@/components/BookCard";
-import { getBooks } from "@/lib/queryFunctions";
+import { getBooks, search } from "@/lib/queryFunctions";
 import { TBook } from "@/lib/validators";
 import { useMutation } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
@@ -17,14 +17,16 @@ import {
 } from "@/components/ui/pagination";
 import { GENRES } from "@/lib/constants";
 import { cn, processApiResult } from "@/lib/utils";
+import SearchBar from "@/components/SearchBar";
 
 const Page = () => {
   const [pageNumber, setPageNumber] = useState(0);
   const [books, setBooks] = useState<z.infer<typeof TBook>[] | null>(null);
   const [totalPages, setTotalPages] = useState(0);
-  const [genre, setGenre] = useState<(typeof GENRES)[number]>(GENRES[0]);
+  const [genre, setGenre] = useState<(typeof GENRES)[number] | null>(GENRES[0]);
+  const [searchTerm, setSearchTerm] = useState<string | null>("");
 
-  const { mutate, isPending } = useMutation({
+  const { mutate: getGenreBooks, isPending: genrePending } = useMutation({
     mutationKey: ["get-books"],
     mutationFn: getBooks,
     onSuccess: (data) => {
@@ -37,19 +39,52 @@ const Page = () => {
     },
   });
 
+  const { mutate: getSearchBooks, isPending: searchPending } = useMutation({
+    mutationKey: ["search"],
+    mutationFn: search,
+    onSuccess: (data) => {
+      const curBooks = processApiResult(data);
+      setBooks(curBooks);
+      setTotalPages(data.data.totalItems);
+    },
+    onMutate: () => {
+      setBooks([]);
+    },
+  });
+
   useEffect(() => {
-    mutate({ genre, page: pageNumber, limit: 8 });
-  }, [genre, mutate, pageNumber]);
+    setPageNumber(0);
+  }, [genre, searchTerm]);
+
+  useEffect(() => {
+    if (genre) {
+      getGenreBooks({ genre, page: pageNumber });
+    }
+    if (searchTerm) {
+      getSearchBooks({ searchTerm, startIndex: String(pageNumber) });
+    }
+  }, [genre, getGenreBooks, pageNumber, getSearchBooks, searchTerm]);
 
   return (
     <div className="mt-[56px] min-h-[calc(100vh-56px)] px-2">
       <div className="grid grid-cols-12 gap-x-2 pt-2 pb-6">
         <div className="border-2 border-zinc-300 rounded-lg p-3 col-span-2 min-h-[calc(100vh-56px)]">
-          <GenreSection curGenre={genre} setGenre={setGenre} />
+          <GenreSection
+            setSearchTerm={setSearchTerm}
+            curGenre={genre}
+            setGenre={setGenre}
+          />
         </div>
         <div className="col-span-10 ">
+          <SearchBar
+            setGenre={setGenre}
+            isPending={searchPending}
+            setSearchTerm={setSearchTerm}
+          />
           <div className="flex items-center justify-center flex-wrap gap-x-9 gap-y-4 min-h-[611.2px]">
-            {isPending && <Loader2 className="h-6 w-6 animate-spin" />}
+            {genrePending || searchPending ? (
+              <Loader2 className="h-6 w-6 animate-spin" />
+            ) : null}
 
             {books?.map((book: z.infer<typeof TBook>, index: number) => (
               <BookCard key={index} book={book} />
@@ -88,9 +123,11 @@ const Page = () => {
 const GenreSection = ({
   setGenre,
   curGenre,
+  setSearchTerm,
 }: {
-  curGenre: string;
-  setGenre: Dispatch<SetStateAction<string>>;
+  curGenre: string | null;
+  setGenre: Dispatch<SetStateAction<string | null>>;
+  setSearchTerm: Dispatch<SetStateAction<string | null>>;
 }) => {
   return (
     <>
@@ -104,7 +141,10 @@ const GenreSection = ({
               "bg-orange-200 text-zinc-800 border border-orange-500 hover:bg-orange-200":
                 genre === curGenre,
             })}
-            onClick={() => setGenre(genre)}
+            onClick={() => {
+              setGenre(genre);
+              setSearchTerm(null);
+            }}
           >
             {genre}
           </Badge>
