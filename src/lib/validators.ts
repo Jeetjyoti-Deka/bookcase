@@ -8,4 +8,10 @@ export const TBook = z.object({
   bookIsbn: z.string().optional(),
   bookPublisher: z.string().nullable(),
   pageCount: z.number().nullable(),
+  volumeId: z.string(),
+  genres: z.array(z.string()).nullable(),
+  rating: z.number().nullable(),
+  width: z.string().optional(),
+  height: z.string().optional(),
+  price: z.number().optional(),
 });

@@ -2,7 +2,7 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { z } from "zod";
 import { TBook } from "./validators";
-import { getBooks } from "./queryFunctions";
+import { getBooks, getSingleBook } from "./queryFunctions";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -11,7 +11,7 @@ export function cn(...inputs: ClassValue[]) {
 export const formatPrice = (price: number) => {
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "USD",
+    currency: "INR",
   });
 
   return formatter.format(price);
@@ -66,8 +66,57 @@ export const processApiResult = (
       bookImage: item.volumeInfo.imageLinks?.thumbnail
         ? (item.volumeInfo.imageLinks?.thumbnail as string)
         : null,
+      volumeId: item.id ?? "",
+      genres: null,
+      rating: null,
     });
   });
 
   return books;
+};
+
+export const processApiResultSingleBook = (
+  data: Awaited<ReturnType<typeof getSingleBook>>
+) => {
+  let book: z.infer<typeof TBook>;
+
+  book = {
+    bookAuthor:
+      data.data.volumeInfo.authors?.length > 1
+        ? (data.data.volumeInfo.authors.join(" and ") as string)
+        : data.data.volumeInfo.authors
+        ? data.data.volumeInfo.authors[0]
+        : "NA",
+    bookTitle: data.data.volumeInfo.title
+      ? (data.data.volumeInfo.title as string)
+      : null,
+    bookDescription: data.data.volumeInfo.description
+      ? (data.data.volumeInfo.description as string)
+      : null,
+    bookPublisher: data.data.volumeInfo.publisher
+      ? (data.data.volumeInfo.publisher as string)
+      : null,
+    pageCount: data.data.volumeInfo.pageCount
+      ? (data.data.volumeInfo.pageCount as number)
+      : null,
+    bookImage: data.data.volumeInfo.imageLinks?.small
+      ? (data.data.volumeInfo.imageLinks?.small as string)
+      : data.data.volumeInfo.imageLinks?.thumbnail
+      ? data.data.volumeInfo.imageLinks?.thumbnail
+      : null,
+    volumeId: data.data.id ?? "",
+    genres: data.data.volumeInfo.categories
+      ?.join(" / ")
+      .split(" / ")
+      .filter(
+        (item: string, index: number, arr: string[]) =>
+          arr.indexOf(item) === index
+      ),
+    rating: data.data.volumeInfo.averageRating,
+    width: data.data.volumeInfo.dimensions?.width,
+    height: data.data.volumeInfo.dimensions?.height,
+    price: data.data.saleInfo?.retailPrice?.amount ?? 450.0,
+  };
+
+  return book;
 };

@@ -10,26 +10,33 @@ import { ImageOff, Plus } from "lucide-react";
 import Image from "next/image";
 import { z } from "zod";
 import { Button } from "./ui/button";
+import Link from "next/link";
 
 const BookCard = ({ book }: { book: z.infer<typeof TBook> }) => {
   return (
     <Card className="w-64 overflow-hidden">
       <CardHeader className="p-0 pb-2">
-        <div className="w-full h-44 relative p-0 flex items-center justify-center bg-gray-200">
-          {book.bookImage ? (
-            <Image
-              src={book.bookImage}
-              fill
-              alt={book.bookTitle ?? ""}
-              className="object-contain w-full"
-            />
-          ) : (
-            <ImageOff className="h-10 w-10" />
-          )}
-        </div>
+        <Link href={`/books/${book.volumeId}`}>
+          <div className="w-full h-44 relative p-0 flex items-center justify-center bg-gray-200">
+            {book.bookImage ? (
+              <Image
+                src={book.bookImage}
+                fill
+                alt={book.bookTitle ?? ""}
+                className="object-contain w-full"
+              />
+            ) : (
+              <ImageOff className="h-10 w-10" />
+            )}
+          </div>
+        </Link>
       </CardHeader>
       <CardContent>
-        <p className="truncate">{book.bookTitle}</p>
+        <Link href={`/books/${book.volumeId}`}>
+          <p className="truncate hover:underline underline-offset-1">
+            {book.bookTitle}
+          </p>
+        </Link>
       </CardContent>
       <CardFooter className="flex items-center justify-between">
         <p>{formatPrice(1)} / day</p>
