@@ -11,7 +11,7 @@ import {
 } from "@/lib/utils";
 import { TBook } from "@/lib/validators";
 import { useQuery } from "@tanstack/react-query";
-import { ImageOff, Loader2, Star, StarHalf } from "lucide-react";
+import { ChevronLeft, ImageOff, Loader2, Star, StarHalf } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { z } from "zod";
@@ -36,7 +36,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 
 import {
   Carousel,
@@ -46,6 +46,9 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import BookCard from "@/components/BookCard";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { addBook } from "@/redux/slice/cartSlice";
+import Link from "next/link";
 
 const BookPage = ({ id }: { id: string }) => {
   const [book, setBook] = useState<z.infer<typeof TBook> | null>(null);
@@ -86,8 +89,33 @@ const BookSection = ({ book }: { book: z.infer<typeof TBook> }) => {
   const [rentalDays, setRentalDays] = useState<"2" | "3" | "5">("2");
   const [quantity, setQuantity] = useState<"1" | "2" | "3" | "4" | "5">("1");
 
+  const dispatch = useAppDispatch();
+
+  const handleAddToCart = () => {
+    dispatch(
+      addBook({
+        bookImage: book.bookImage ?? null,
+        bookTitle: book.bookTitle,
+        purchaseType: purchaseOption,
+        volumeId: book.volumeId,
+        quantity: purchaseOption === "buy" ? Number(quantity) : null,
+        rentalDays: purchaseOption === "rent" ? Number(rentalDays) : null,
+      })
+    );
+  };
+
   return (
     <div>
+      <Link
+        href="/books"
+        className={buttonVariants({
+          variant: "ghost",
+          className: "mb-4",
+        })}
+      >
+        <ChevronLeft className="w-4 h-4 mr-1.5" />
+        Back
+      </Link>
       <div className="flex flex-col items-center min-[662px]:flex-row min-[662px]:items-start justify-start gap-x-10 mb-10">
         <div className="w-72 h-64 overflow-hidden rounded-lg bg-gray-200 relative flex items-center justify-center">
           {book.bookImage ? (
@@ -164,7 +192,6 @@ const BookSection = ({ book }: { book: z.infer<typeof TBook> }) => {
           </div>
         </div>
       </div>
-
       <RadioGroup
         value={purchaseOption}
         onValueChange={(v: "buy" | "rent") => setPurchaseOption(v)}
@@ -210,7 +237,11 @@ const BookSection = ({ book }: { book: z.infer<typeof TBook> }) => {
                 </SelectContent>
               </Select>
             </div>
-            <Button disabled={purchaseOption === "buy"} className="mt-auto">
+            <Button
+              disabled={purchaseOption === "buy"}
+              onClick={handleAddToCart}
+              className="mt-auto"
+            >
               Add To Cart
             </Button>
           </div>
@@ -261,13 +292,16 @@ const BookSection = ({ book }: { book: z.infer<typeof TBook> }) => {
                 </SelectContent>
               </Select>
             </div>
-            <Button disabled={purchaseOption === "rent"} className="mt-auto">
+            <Button
+              disabled={purchaseOption === "rent"}
+              onClick={handleAddToCart}
+              className="mt-auto"
+            >
               Add To Cart
             </Button>
           </div>
         </div>
       </RadioGroup>
-
       <div>
         <RelatedBooks
           genre={book.genres && book.genres[1] ? book.genres[1] : "Fiction"}
@@ -279,7 +313,6 @@ const BookSection = ({ book }: { book: z.infer<typeof TBook> }) => {
 
 const RelatedBooks = ({ genre }: { genre: string }) => {
   const [books, setBooks] = useState<z.infer<typeof TBook>[] | null>(null);
-  console.log(books);
 
   const { isSuccess, data } = useQuery({
     queryKey: ["get-related-books"],

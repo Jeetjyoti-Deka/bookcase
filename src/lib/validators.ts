@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const TBook = z.object({
   bookAuthor: z.string(),
-  bookTitle: z.string().nullable(),
+  bookTitle: z.string(),
   bookImage: z.string().nullable(),
   bookDescription: z.string().nullable(),
   bookIsbn: z.string().optional(),

@@ -3,8 +3,9 @@ import Navbar from "@/components/Navbar";
 import type { Metadata } from "next";
 import { Lato } from "next/font/google";
 import "./globals.css";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ReactQueryProvider from "./ReactQueryProvider";
+
+import ReduxProvider from "@/redux/ReduxProvider";
 
 const lato = Lato({
   subsets: ["latin"],
@@ -24,11 +25,13 @@ export default function RootLayout({
   return (
     <html lang="en" className="hide-scrollbar">
       <body className={lato.className}>
-        <ReactQueryProvider>
-          <Navbar />
-          {children}
-          <Footer />
-        </ReactQueryProvider>
+        <ReduxProvider>
+          <ReactQueryProvider>
+            <Navbar />
+            {children}
+            <Footer />
+          </ReactQueryProvider>
+        </ReduxProvider>
       </body>
     </html>
   );
