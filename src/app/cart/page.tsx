@@ -1,18 +1,6 @@
-"use client";
-
-import { useAppSelector } from "@/redux/hooks";
+import Cart from "./Cart";
 
 const Page = () => {
-  const cart = useAppSelector((state) => state.cart);
-
-  return (
-    <div>
-      {cart.map((book) => (
-        <div key={book.volumeId}>
-          {book.bookTitle} - {book.purchaseType}
-        </div>
-      ))}
-    </div>
-  );
+  return <Cart />;
 };
 export default Page;

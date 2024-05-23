@@ -100,6 +100,8 @@ const BookSection = ({ book }: { book: z.infer<typeof TBook> }) => {
         volumeId: book.volumeId,
         quantity: purchaseOption === "buy" ? Number(quantity) : null,
         rentalDays: purchaseOption === "rent" ? Number(rentalDays) : null,
+        price: purchaseOption === "buy" ? book.price ?? 250.0 : null,
+        rentalPrice: purchaseOption === "rent" ? 65.0 : null,
       })
     );
   };

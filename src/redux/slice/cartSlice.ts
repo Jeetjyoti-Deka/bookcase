@@ -8,6 +8,8 @@ export interface CartBook {
   quantity: number | null;
   purchaseType: "rent" | "buy";
   rentalDays: number | null;
+  price: number | null;
+  rentalPrice: number | null;
 }
 
 const initialState: CartBook[] = [];
@@ -27,9 +29,12 @@ export const cartSlice = createSlice({
         state.push(action.payload);
       }
     },
+    removeBook: (state, action: PayloadAction<CartBook>) => {
+      return state.filter((book) => book.volumeId !== action.payload.volumeId);
+    },
   },
 });
 
-export const { addBook } = cartSlice.actions;
+export const { addBook, removeBook } = cartSlice.actions;
 
 export default cartSlice.reducer;
