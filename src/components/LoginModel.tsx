@@ -35,7 +35,7 @@ const LoginModel = ({
           </DialogTitle>
           <DialogDescription className="text-base text-center py-2">
             <span className="font-medium text-zinc-900">
-              Your configuration was saved!
+              Your cart is safe!!
             </span>{" "}
             Please login or create an account to complete your purchase.
           </DialogDescription>
@@ -46,7 +46,7 @@ const LoginModel = ({
             className={buttonVariants({
               variant: "outline",
             })}
-            postLoginRedirectURL="/cart"
+            postLoginRedirectURL="/auth-callback?redirect=/cart"
           >
             Login
           </LoginLink>

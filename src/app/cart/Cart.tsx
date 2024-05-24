@@ -49,6 +49,7 @@ const Cart = () => {
     mutationFn: createCheckoutSession,
     mutationKey: ["create-payment-session"],
     onSuccess: ({ url }) => {
+      setIsLoginModelOpen(false);
       if (url) {
         router.push(url);
       } else {
@@ -59,12 +60,8 @@ const Cart = () => {
 
   const handleCheckout = () => {
     if (user) {
-      console.log(user);
-
       createPaymentSession({ cart });
     } else {
-      console.log("no user");
-
       setIsLoginModelOpen(true);
     }
   };

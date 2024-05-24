@@ -9,6 +9,81 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @map("_id")
+  email     String
+  order     Order[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum PurchaseType {
+  rent
+  buy
+}
+
+model OrderItem {
+  id           String       @id @default(auto()) @map("_id") @db.ObjectId
+  volumeId     String
+  bookTitle    String
+  bookImage    String?
+  quantity     Int?         @default(1)
+  purchaseType PurchaseType
+  rentalDays   Int?
+  price        Float?
+  rentalPrice  Float?
+  Order        Order?       @relation(fields: [orderId], references: [id])
+  orderId      String?      @db.ObjectId
+}
+
+enum OrderStatus {
+  fulfilled
+  shipped
+  awaiting_shipment
+}
+
+model Order {
+  id     String      @id @default(auto()) @map("_id") @db.ObjectId
+  user   User        @relation(fields: [userId], references: [id])
+  userId String
+  amount Float
+  isPaid Boolean     @default(false)
+  status OrderStatus @default(awaiting_shipment)
+
+  orderItems OrderItem[]
+
+  shippingAddress   ShippingAddress? @relation(fields: [shippingAddressId], references: [id])
+  shippingAddressId String?          @db.ObjectId
+  billingAddress    BillingAddress?  @relation(fields: [billingAddressId], references: [id])
+  billingAddressId  String?          @db.ObjectId
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+}
+
+model ShippingAddress {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  street      String
+  city        String
+  postalCode  String
+  country     String
+  state       String?
+  phoneNumber String?
+  orders      Order[]
+}
+
+model BillingAddress {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  street      String
+  city        String
+  postalCode  String
+  country     String
+  state       String?
+  phoneNumber String?
+  orders      Order[]
 }
