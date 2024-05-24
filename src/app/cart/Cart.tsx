@@ -17,17 +17,26 @@ import {
 } from "@/components/ui/select";
 import { formatPrice } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { createCheckoutSession } from "./actions";
+import { useRouter } from "next/navigation";
+
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import LoginModel from "@/components/LoginModel";
 
 const Cart = () => {
   const cart = useAppSelector((state) => state.cart);
   const [total, setTotal] = useState(0);
+  const [isLoginModelOpen, setIsLoginModelOpen] = useState(false);
+
+  const router = useRouter();
+
+  const { user } = useKindeBrowserClient();
 
   useEffect(() => {
     setTotal(
       cart.reduce((acc, curr) => {
         if (curr.purchaseType === "buy") {
-          console.log(acc);
-
           return acc + curr.price! * curr.quantity!;
         } else {
           return acc + curr.rentalPrice! * curr.rentalDays!;
@@ -36,8 +45,36 @@ const Cart = () => {
     );
   }, [cart]);
 
+  const { mutate: createPaymentSession } = useMutation({
+    mutationFn: createCheckoutSession,
+    mutationKey: ["create-payment-session"],
+    onSuccess: ({ url }) => {
+      if (url) {
+        router.push(url);
+      } else {
+        throw new Error("Unable to retrieve payment URL");
+      }
+    },
+  });
+
+  const handleCheckout = () => {
+    if (user) {
+      console.log(user);
+
+      createPaymentSession({ cart });
+    } else {
+      console.log("no user");
+
+      setIsLoginModelOpen(true);
+    }
+  };
+
   return (
     <MaxWidthWrapper className="mt-[56px] min-h-[calc(100vh-56px)] py-10">
+      <LoginModel
+        isOpen={isLoginModelOpen}
+        onOpenChange={setIsLoginModelOpen}
+      />
       <div className="flex flex-col">
         <div className="grid-cols-5 items-center hidden sm:grid">
           <h3 className="font-normal text-gray-600 text-lg place-self-center col-span-2 ">
@@ -72,7 +109,7 @@ const Cart = () => {
             <h6 className="text-zinc-700">Total</h6>
             <p>{formatPrice(total + 49)}</p>
           </div>
-          <Button className="w-full mt-3">
+          <Button onClick={handleCheckout} className="w-full mt-3">
             Checkout
             <ShoppingCart className="w-4 h-4 ml-1.5" />
           </Button>
