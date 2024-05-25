@@ -28,13 +28,14 @@ export const createCheckoutSession = async ({ cart }: { cart: CartBook[] }) => {
   } else {
     order = await db.order.create({
       data: {
-        amount: cart.reduce((acc, curr) => {
-          if (curr.purchaseType === "buy") {
-            return acc + curr.price! * curr.quantity!;
-          } else {
-            return acc + curr.rentalPrice! * curr.rentalDays!;
-          }
-        }, 0),
+        amount:
+          cart.reduce((acc, curr) => {
+            if (curr.purchaseType === "buy") {
+              return acc + curr.price! * curr.quantity!;
+            } else {
+              return acc + curr.rentalPrice! * curr.rentalDays!;
+            }
+          }, 0) + 49,
         userId: user.id,
       },
     });
@@ -88,7 +89,6 @@ export const createCheckoutSession = async ({ cart }: { cart: CartBook[] }) => {
       },
     });
   });
-
   const normalProducts = await Promise.all(products);
 
   const stripeSession = await stripe.checkout.sessions.create({
@@ -105,6 +105,28 @@ export const createCheckoutSession = async ({ cart }: { cart: CartBook[] }) => {
       quantity: Number(product.metadata.quantity!),
     })),
     metadata: { userId: user.id, orderId: order.id },
+    shipping_options: [
+      {
+        shipping_rate_data: {
+          display_name: "Standard",
+          type: "fixed_amount",
+          fixed_amount: {
+            amount: 49 * 100,
+            currency: "INR",
+          },
+          delivery_estimate: {
+            minimum: {
+              unit: "business_day",
+              value: 5,
+            },
+            maximum: {
+              unit: "business_day",
+              value: 7,
+            },
+          },
+        },
+      },
+    ],
   });
 
   return { url: stripeSession.url };
