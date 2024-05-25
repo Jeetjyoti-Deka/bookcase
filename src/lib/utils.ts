@@ -53,7 +53,7 @@ export const processApiResult = (
           : "NA",
       bookTitle: item.volumeInfo.title
         ? (item.volumeInfo.title as string)
-        : null,
+        : "NA",
       bookDescription: item.volumeInfo.description
         ? (item.volumeInfo.description as string)
         : null,
@@ -89,7 +89,7 @@ export const processApiResultSingleBook = (
         : "NA",
     bookTitle: data.data.volumeInfo.title
       ? (data.data.volumeInfo.title as string)
-      : null,
+      : "NA",
     bookDescription: data.data.volumeInfo.description
       ? (data.data.volumeInfo.description as string)
       : null,
