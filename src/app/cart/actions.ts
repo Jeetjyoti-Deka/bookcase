@@ -104,6 +104,7 @@ export const createCheckoutSession = async ({ cart }: { cart: CartBook[] }) => {
       price: product.default_price as string,
       quantity: Number(product.metadata.quantity!),
     })),
+    metadata: { userId: user.id, orderId: order.id },
   });
 
   return { url: stripeSession.url };
