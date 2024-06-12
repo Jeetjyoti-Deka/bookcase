@@ -22,7 +22,7 @@ const Page = () => {
     if (redirect) {
       router.push(redirect);
     } else {
-      router.push("/");
+      router.push("/books");
     }
   }
 

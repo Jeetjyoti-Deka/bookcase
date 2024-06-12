@@ -68,14 +68,14 @@ const Page = () => {
   return (
     <div className="mt-[56px] min-h-[calc(100vh-56px)] px-2">
       <div className="grid grid-cols-12 gap-x-2 pt-2 pb-6">
-        <div className="border-2 border-zinc-300 rounded-lg p-3 col-span-2 min-h-[calc(100vh-56px)]">
+        <div className="border-2 border-zinc-300 rounded-lg p-3 col-span-2 min-h-[calc(100vh-56px)] hidden lg:block">
           <GenreSection
             setSearchTerm={setSearchTerm}
             curGenre={genre}
             setGenre={setGenre}
           />
         </div>
-        <div className="col-span-10 ">
+        <div className="col-span-12 lg:col-span-10">
           <SearchBar
             setGenre={setGenre}
             isPending={searchPending}

@@ -26,7 +26,6 @@ const SearchBar = ({
 
     window.addEventListener("keypress", handleKeyPress);
 
-    // Cleanup function to remove the event listener
     return () => {
       window.removeEventListener("keypress", handleKeyPress);
     };
@@ -34,15 +33,15 @@ const SearchBar = ({
 
   return (
     <div className="w-full flex items-center justify-center pt-6 pb-10">
-      <div className="w-full flex items-center justify-center relative">
+      <div className="relative">
         <Input
-          className="rounded-full w-[50%] pr-14 border-2 border-zinc-300 focus-visible:ring-white focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-orange-400 transition-all"
+          className="rounded-full w-[300px] sm:w-[500px] pr-14 border-2 border-zinc-300 focus-visible:ring-white focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-orange-400 transition-all"
           value={term}
           onChange={(e) => setTerm(e.target.value)}
         />
         <Button
           disabled={isPending}
-          className="absolute top-0 right-[19.7rem] rounded-full"
+          className="absolute top-0 right-0 rounded-full"
           onClick={() => {
             setSearchTerm(term);
             setGenre(null);
