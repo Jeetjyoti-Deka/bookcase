@@ -70,7 +70,7 @@ const Navbar = async () => {
                 </MobileNavItem>
 
                 {user && (
-                  <MobileNavItem href={`my-orders/${user?.id}`}>
+                  <MobileNavItem href={`/my-orders/${user?.id}`}>
                     <LibraryBig className="w-5 h-5" /> My Orders
                   </MobileNavItem>
                 )}
@@ -108,7 +108,7 @@ const ProfileDropdown = async () => {
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href={`my-orders/${user?.id}`}>My Orders</Link>
+          <Link href={`/my-orders/${user?.id}`}>My Orders</Link>
         </DropdownMenuItem>
         <Button className="w-full mt-2" variant="default" asChild>
           <LogoutLink postLogoutRedirectURL="/books">Sign Out</LogoutLink>

@@ -120,3 +120,11 @@ export const processApiResultSingleBook = (
 
   return book;
 };
+
+export const formatDate = (date: Date) => {
+  const formatter = new Intl.DateTimeFormat("en-US", {
+    dateStyle: "long",
+  });
+
+  return formatter.format(date);
+};

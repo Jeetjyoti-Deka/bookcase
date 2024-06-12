@@ -1,17 +1,21 @@
 "use client";
 
+import MaxWidthWrapper from "@/components/MaxWidthWrapper";
+import { cn, formatDate, formatPrice } from "@/lib/utils";
+import { useAppDispatch } from "@/redux/hooks";
+import { emptyCart } from "@/redux/slice/cartSlice";
+import { OrderItem } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
+import { ImageOff, Loader2, MapPin, ReceiptText, Truck } from "lucide-react";
+import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { getPaymentStatus } from "./actions";
-import { ImageOff, Loader2, MapPin, ReceiptText, Truck } from "lucide-react";
-import MaxWidthWrapper from "@/components/MaxWidthWrapper";
-import Image from "next/image";
-import { OrderItem } from "@prisma/client";
-import { formatPrice } from "@/lib/utils";
 
 const ThankYou = () => {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId") || "";
+
+  const dispatch = useAppDispatch();
 
   const { data } = useQuery({
     queryKey: ["payment-status"],
@@ -43,6 +47,8 @@ const ThankYou = () => {
       </div>
     );
   }
+
+  dispatch(emptyCart());
 
   return (
     <MaxWidthWrapper className="mt-[56px] min-h-[calc(100vh-56px)] px-2">
@@ -99,7 +105,7 @@ const ThankYou = () => {
         <div className="w-full h-px bg-gray-400 mt-1" />
         <div className="flex flex-col gap-y-4 mt-6">
           {data.orderItems.map((item) => (
-            <OrderRow key={item.id} item={item} />
+            <OrderRow key={item.id} item={item} showDate={false} />
           ))}
         </div>
       </div>
@@ -126,7 +132,13 @@ const ThankYou = () => {
   );
 };
 
-const OrderRow = ({ item }: { item: OrderItem }) => {
+export const OrderRow = ({
+  item,
+  showDate,
+}: {
+  item: OrderItem;
+  showDate: boolean;
+}) => {
   return (
     <div className="grid grid-cols-[15%,85%] xs:grid-cols-[10%,90%]">
       <div className="w-10 min-[669px]:w-20 h-10 min-[669px]:h-20 flex items-center justify-center relative bg-gray-200">
@@ -141,7 +153,12 @@ const OrderRow = ({ item }: { item: OrderItem }) => {
           <ImageOff className="w-4 h-4" />
         )}
       </div>
-      <div className="grid grid-cols-3 items-center justify-center">
+      <div
+        className={cn(
+          "grid grid-cols-3 items-center justify-center",
+          showDate && "xs:grid-cols-4"
+        )}
+      >
         <div className="flex items-center justify-center">
           <h3 className="max-w-32 overflow-hidden text-ellipsis whitespace-nowrap">
             {item.bookTitle}
@@ -160,6 +177,12 @@ const OrderRow = ({ item }: { item: OrderItem }) => {
             <p>{formatPrice(item.rentalPrice! * item.rentalDays!)}</p>
           )}
         </div>
+
+        {showDate && (
+          <div className="place-self-center hidden xs:block">
+            <p>{formatDate(item.updatedAt)}</p>
+          </div>
+        )}
       </div>
     </div>
   );
