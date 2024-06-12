@@ -4,15 +4,25 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { formatPrice } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 import { TBook } from "@/lib/validators";
-import { ImageOff, Plus } from "lucide-react";
+import { Check, ImageOff, Plus } from "lucide-react";
 import Image from "next/image";
 import { z } from "zod";
 import { Button } from "./ui/button";
 import Link from "next/link";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { addBook } from "@/redux/slice/cartSlice";
+import { useMemo } from "react";
 
 const BookCard = ({ book }: { book: z.infer<typeof TBook> }) => {
+  const dispatch = useAppDispatch();
+  const cart = useAppSelector((state) => state.cart);
+
+  const isInCart = useMemo(() => {
+    return cart.find((item) => item.volumeId === book.volumeId);
+  }, [cart, book]);
+
   return (
     <Card className="w-64 overflow-hidden">
       <CardHeader className="p-0 pb-2">
@@ -40,8 +50,35 @@ const BookCard = ({ book }: { book: z.infer<typeof TBook> }) => {
       </CardContent>
       <CardFooter className="flex items-center justify-between">
         <p>{formatPrice(1)} / day</p>
-        <Button>
-          Add <Plus className="w-4 h-4 ml-1.5" />
+        <Button
+          className={cn(
+            "transition-all",
+            isInCart && "bg-green-500 hover:bg-green-500"
+          )}
+          onClick={() => {
+            dispatch(
+              addBook({
+                bookImage: book.bookImage,
+                bookTitle: book.bookTitle,
+                price: null,
+                purchaseType: "rent",
+                quantity: 1,
+                rentalDays: 2,
+                rentalPrice: 65,
+                volumeId: book.volumeId,
+              })
+            );
+          }}
+        >
+          {isInCart ? (
+            <>
+              Added <Check className="w-4 h-4 ml-1.5" />
+            </>
+          ) : (
+            <>
+              Add <Plus className="w-4 h-4 ml-1.5" />
+            </>
+          )}
         </Button>
       </CardFooter>
     </Card>
