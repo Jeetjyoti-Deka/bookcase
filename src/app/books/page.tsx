@@ -8,6 +8,8 @@ import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { z } from "zod";
 
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -76,11 +78,28 @@ const Page = () => {
           />
         </div>
         <div className="col-span-12 lg:col-span-10">
-          <SearchBar
-            setGenre={setGenre}
-            isPending={searchPending}
-            setSearchTerm={setSearchTerm}
-          />
+          <div className="relative w-fit mx-auto mb-8 xs:mb-0">
+            <SearchBar
+              setGenre={setGenre}
+              isPending={searchPending}
+              setSearchTerm={setSearchTerm}
+            />
+            <div className="absolute top-20 max-xs:left-1/2 max-xs:-translate-x-1/2 xs:top-6 xs:-right-20 block lg:hidden">
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="secondary">Genre</Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <GenreSection
+                    curGenre={genre}
+                    setGenre={setGenre}
+                    setSearchTerm={setSearchTerm}
+                  />
+                </DialogContent>
+              </Dialog>
+            </div>
+          </div>
+
           <div className="flex items-center justify-center flex-wrap gap-x-9 gap-y-4 min-h-[611.2px]">
             {genrePending || searchPending ? (
               <Loader2 className="h-6 w-6 animate-spin" />
