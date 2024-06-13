@@ -1,12 +1,11 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-import type { Metadata } from "next";
 import { Lato } from "next/font/google";
 import "./globals.css";
 import ReactQueryProvider from "./ReactQueryProvider";
 
-import ReduxProvider from "@/redux/ReduxProvider";
 import { constructMetadata } from "@/lib/utils";
+import ReduxProvider from "@/redux/ReduxProvider";
 
 const lato = Lato({
   subsets: ["latin"],
