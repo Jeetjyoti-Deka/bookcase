@@ -70,7 +70,7 @@ const Cart = () => {
     return (
       <MaxWidthWrapper className="mt-[56px] min-h-[calc(100vh-56px-84.8px)] py-10 flex flex-col items-center justify-center">
         <h2 className="text-3xl font-semibold">Your cart is empty.</h2>
-        <p className="text-muted-foreground">
+        <p className="text-muted-foreground text-center">
           Find interesting books and add them to cart.{" "}
           <span className="text-primary">
             <Link href="/books">Continue Shopping</Link>

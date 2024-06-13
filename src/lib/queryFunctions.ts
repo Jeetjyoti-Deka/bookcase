@@ -1,4 +1,3 @@
-import { db } from "@/db";
 import axios from "axios";
 
 export const getBooks = ({
@@ -11,7 +10,9 @@ export const getBooks = ({
   limit?: number;
 }) => {
   return axios.get(
-    `https://www.googleapis.com/books/v1/volumes?q=${genre}&orderBy=newest&key=AIzaSyAGNQ9DeJP_67nhf5S4Yf2oR7FtpIUGHj0&startIndex=${page}&maxResults=${limit}`
+    `https://www.googleapis.com/books/v1/volumes?q=${genre}&orderBy=newest&key=${
+      process.env.NEXT_PUBLIC_GOOGLE_API_KEY as string
+    }&startIndex=${page}&maxResults=${limit}`
   );
 };
 
@@ -27,7 +28,7 @@ export const search = ({
   let url = new URL("https://www.googleapis.com/books/v1/volumes");
   url.searchParams.append("q", searchTerm);
   url.searchParams.append("orderBy", "newest");
-  url.searchParams.append("key", "AIzaSyAGNQ9DeJP_67nhf5S4Yf2oR7FtpIUGHj0");
+  url.searchParams.append("key", process.env.NEXT_PUBLIC_GOOGLE_API_KEY!);
   url.searchParams.append("startIndex", startIndex);
   url.searchParams.append("maxResults", maxResults);
   return axios.get(url.href);
@@ -35,6 +36,6 @@ export const search = ({
 
 export const getSingleBook = (id: string) => {
   return axios.get(
-    `https://www.googleapis.com/books/v1/volumes/${id}?key=AIzaSyAGNQ9DeJP_67nhf5S4Yf2oR7FtpIUGHj0`
+    `https://www.googleapis.com/books/v1/volumes/${id}?key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}`
   );
 };

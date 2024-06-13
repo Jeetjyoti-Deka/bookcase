@@ -48,7 +48,7 @@ const Page = ({
           <h2 className="font-semibold text-2xl mt-7">
             You have not ordered any books yet.
           </h2>
-          <p className="text-normal text-muted-foreground">
+          <p className="text-normal text-muted-foreground text-center">
             Find books that you would like.{" "}
             <span className="text-primary">
               <Link href="/books">Continue Shopping</Link>
