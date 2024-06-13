@@ -3,6 +3,7 @@ import { twMerge } from "tailwind-merge";
 import { z } from "zod";
 import { TBook } from "./validators";
 import { getBooks, getSingleBook } from "./queryFunctions";
+import { Metadata } from "next";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -128,3 +129,46 @@ export const formatDate = (date: Date) => {
 
   return formatter.format(date);
 };
+
+export function constructMetadata({
+  title = "BookCase - Rent before you buy.",
+  description = "Rent books before you are sure to buy them",
+  image = "/books/book-2.svg",
+  icons = "/favicon.ico",
+  noIndex = false,
+}: {
+  title?: string;
+  description?: string;
+  image?: string;
+  icons?: string;
+  noIndex?: boolean;
+} = {}): Metadata {
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: [
+        {
+          url: image,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [image],
+      creator: "@Jeetjyoti_Deka",
+    },
+    icons,
+    metadataBase: new URL("https://bookcase-olive.vercel.app"),
+    ...(noIndex && {
+      robots: {
+        index: false,
+        follow: false,
+      },
+    }),
+  };
+}
