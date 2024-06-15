@@ -111,7 +111,7 @@ const ProfileDropdown = async () => {
           <Link href={`/my-orders/${user?.id}`}>My Orders</Link>
         </DropdownMenuItem>
         <Button className="w-full mt-2" variant="default" asChild>
-          <LogoutLink postLogoutRedirectURL="/books">Sign Out</LogoutLink>
+          <LogoutLink>Sign Out</LogoutLink>
         </Button>
       </DropdownMenuContent>
     </DropdownMenu>
